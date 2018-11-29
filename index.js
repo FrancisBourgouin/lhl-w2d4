@@ -32,4 +32,9 @@ app.get('/', (req, res) => {
   res.redirect('/quotes');
 });
 
+app.get('/quotes', (req, res) => {
+  const quotes = Object.values(movieQuotesDb);
+  res.render('quotes', { quotes });
+});
+
 app.listen(port, () => console.log(`Express server running on port ${port}`));
