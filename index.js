@@ -1,7 +1,11 @@
 const express = require('express');
+const bodyParser = require('body-parser');
+const uuidv4 = require('uuid/v4');
 
 const app = express();
 const port = 8080;
+
+app.use(bodyParser.urlencoded({ extended: false }));
 
 const movieQuotesDb = {
   'd9424e04-9df6-4b76-86cc-9069ca8ee4bb': {
@@ -21,7 +25,7 @@ const movieQuotesDb = {
     quote: 'The greatest teacher, failure is.',
   },
   '4ad11feb-a76a-42ae-a1c6-8e30dc12c3fe': {
-    id: '4ad11feb-a76a-42ae-a1c6-8e30dc12c3fe',
+    id: '4ad11feb-a76ad-42ae-a1c6-8e30dc12c3fe',
     quote: 'Speak Friend and Enter',
   },
 };
@@ -35,6 +39,26 @@ app.get('/', (req, res) => {
 app.get('/quotes', (req, res) => {
   const quotes = Object.values(movieQuotesDb);
   res.render('quotes', { quotes });
+});
+
+// Display the form to create a new quote
+app.get('/quotes/new', (req, res) => {
+  res.render('quotes_new');
+});
+
+// create a new quote
+app.post('/quotes', (req, res) => {
+  const quoteContent = req.body.quote;
+  const id = uuidv4();
+
+  const quote = {
+    id,
+    quote: quoteContent,
+  };
+
+  movieQuotesDb[id] = quote;
+
+  res.status(301).redirect('/quotes');
 });
 
 app.listen(port, () => console.log(`Express server running on port ${port}`));
