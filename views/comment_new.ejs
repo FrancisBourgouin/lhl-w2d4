@@ -4,22 +4,27 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Create a New Quote</title>
+    <title>Create a New Comment</title>
   </head>
   <body>
-    <h1>Edit Quote</h1>
+    <h1>Add a New Comment</h1>
 
-    <form method="post" action="/quotes/<%= quote.id %>?_method=PUT">
+    <h2>Quote</h2>
+    <p>
+      <%= quote.quote %>
+    </p>
+
+    <form method="post" action="/quotes/<%= quote.quoteId %>/comments">
       <div style="width: 20em;">
         <input
           style="width: 100%"
           type="text"
-          name="quote"
-          id="quote"
-          value="<%= quote.quote %>"
+          name="comment"
+          id="comment"
+          placeholder="Please enter your comment"
         />
 
-        <input type="submit" value="Update" />
+        <input type="submit" value="Add" />
       </div>
     </form>
   </body>

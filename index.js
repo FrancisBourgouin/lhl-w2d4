@@ -1,11 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const uuidv4 = require('uuid/v4');
+const methodOverride = require('method-override');
 
 const app = express();
 const port = 8080;
 
 app.use(bodyParser.urlencoded({ extended: false }));
+app.use(methodOverride('_method'));
 
 const movieQuotesDb = {
   'd9424e04-9df6-4b76-86cc-9069ca8ee4bb': {
@@ -30,6 +32,26 @@ const movieQuotesDb = {
   },
 };
 
+const quoteComments = {
+  '70fcf8bd-6cb0-42f3-9887-77aa9db4f0ac': {
+    id: '70fcf8bd-6cb0-42f3-9887-77aa9db4f0ac',
+    comment: 'So awesome comment! I said this.',
+    quoteId: 'd9424e04-9df6-4b76-86cc-9069ca8ee4bb',
+  },
+};
+
+const quoteList = () => {
+  const quotes = {};
+
+  for (const quoteId in movieQuotesDb) {
+    quotes[quoteId] = movieQuotesDb[quoteId];
+    quotes[quoteId].comments = Object.keys(quoteComments)
+      .filter(commentId => quoteComments[commentId].quoteId === quoteId)
+      .map(commentId => quoteComments[commentId]);
+  }
+  return quotes;
+};
+
 app.set('view engine', 'ejs');
 
 app.get('/', (req, res) => {
@@ -37,7 +59,7 @@ app.get('/', (req, res) => {
 });
 
 app.get('/quotes', (req, res) => {
-  const quotes = Object.values(movieQuotesDb);
+  const quotes = Object.values(quoteList());
   res.render('quotes', { quotes });
 });
 
@@ -67,11 +89,36 @@ app.get('/quotes/:id', (req, res) => {
   const quote = movieQuotesDb[id];
   res.render('quote_show', { quote });
 });
-// why not put? we need method everride
-app.post('/quotes/:id', (req, res) => {
+// why not put? we need method override
+app.put('/quotes/:id', (req, res) => {
   const id = req.params.id;
   const quote = req.body.quote;
   movieQuotesDb[id].quote = quote;
+  res.redirect('/quotes');
+});
+
+// Add Comment
+
+// Display comment form
+app.get('/quotes/:id/comments/new', (req, res) => {
+  const quoteId = req.params.id;
+
+  res.render('comment_new', {
+    quote: { quoteId, quote: movieQuotesDb[quoteId].quote },
+  });
+});
+
+// Create comment
+app.post('/quotes/:id/comments', (req, res) => {
+  const quoteId = req.params.id;
+  const comment = req.body.comment;
+  const commentId = uuidv4();
+  quoteComments[commentId] = {
+    id: commentId,
+    comment,
+    quoteId,
+  };
+
   res.redirect('/quotes');
 });
 
