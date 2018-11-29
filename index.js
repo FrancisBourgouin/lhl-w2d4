@@ -9,11 +9,11 @@ app.use(bodyParser.urlencoded({ extended: false }));
 
 const movieQuotesDb = {
   'd9424e04-9df6-4b76-86cc-9069ca8ee4bb': {
-    id: 'd9424e04 - 9df6-4b76-86cc-9069ca8ee4bb',
+    id: 'd9424e04-9df6-4b76-86cc-9069ca8ee4bb',
     quote: 'Why so serious?',
   },
-  '27b03e95 - 27d3-4ad1-9781 - f4556c1dee3e': {
-    id: '27b03e95-27d3 - 4ad1 - 9781 - f4556c1dee3e',
+  '27b03e95-27d3-4ad1-9781-f4556c1dee3e': {
+    id: '27b03e95-27d3-4ad1-9781-f4556c1dee3e',
     quote: 'YOU SHALL NOT PASS!',
   },
   '5b2cdbcb-7b77-4b23-939f-5096300e1100': {
@@ -25,7 +25,7 @@ const movieQuotesDb = {
     quote: 'The greatest teacher, failure is.',
   },
   '4ad11feb-a76a-42ae-a1c6-8e30dc12c3fe': {
-    id: '4ad11feb-a76ad-42ae-a1c6-8e30dc12c3fe',
+    id: '4ad11feb-a76a-42ae-a1c6-8e30dc12c3fe',
     quote: 'Speak Friend and Enter',
   },
 };
@@ -43,7 +43,7 @@ app.get('/quotes', (req, res) => {
 
 // Display the form to create a new quote
 app.get('/quotes/new', (req, res) => {
-  res.render('quotes_new');
+  res.render('quote_new');
 });
 
 // create a new quote
@@ -58,7 +58,21 @@ app.post('/quotes', (req, res) => {
 
   movieQuotesDb[id] = quote;
 
-  res.status(301).redirect('/quotes');
+  res.status(301).redirect('/quotes ');
+});
+
+// edit a quote
+app.get('/quotes/:id', (req, res) => {
+  const id = req.params.id;
+  const quote = movieQuotesDb[id];
+  res.render('quote_show', { quote });
+});
+// why not put? we need method everride
+app.post('/quotes/:id', (req, res) => {
+  const id = req.params.id;
+  const quote = req.body.quote;
+  movieQuotesDb[id].quote = quote;
+  res.redirect('/quotes');
 });
 
 app.listen(port, () => console.log(`Express server running on port ${port}`));

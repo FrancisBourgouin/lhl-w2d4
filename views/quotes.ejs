@@ -11,7 +11,7 @@
 
     <ul>
       <% for (const quote of quotes) { %>
-      <li><%= quote.quote %></li>
+        <li><%= quote.quote %> <a href="/quotes/<%= quote.id %>">Edit</a></li>
       <% } %>
     </ul>
 
