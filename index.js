@@ -122,4 +122,27 @@ app.post('/quotes/:id/comments', (req, res) => {
   res.redirect('/quotes');
 });
 
+// Edit comment
+
+app.get('/quotes/:quoteId/comments/:commentId', (req, res) => {
+  const quoteId = req.params.quoteId;
+  const commentId = req.params.commentId;
+
+  res.render('comment_show', {
+    quote: {
+      quote: movieQuotesDb[quoteId],
+      comment: quoteComments[commentId],
+    },
+  });
+});
+
+app.put('/comments/:id', (req, res) => {
+  const commentId = req.params.id;
+  const comment = req.body.comment;
+
+  quoteComments[commentId].comment = comment;
+
+  res.redirect('/quotes');
+});
+
 app.listen(port, () => console.log(`Express server running on port ${port}`));
