@@ -150,4 +150,11 @@ app.delete('/quotes/:id', (req, res) => {
   res.redirect('/quotes');
 });
 
+//Delete a comment
+app.delete('/comments/:id', (req, res) => {
+  const { id } = req.params;
+  delete quoteComments[id];
+  res.redirect('/quotes');
+});
+
 app.listen(port, () => console.log(`Express server running on port ${port}`));

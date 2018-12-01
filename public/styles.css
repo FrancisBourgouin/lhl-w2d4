@@ -32,12 +32,14 @@ div.card-header {
   width: 35em;
 }
 
-div.card-header span {
+div.card-header span,
+.list-group-item span {
   display: flex;
   align-items: center;
 }
 
-div.card-header span input[type='submit'] {
+div.card-header span input[type='submit'],
+.list-group-item input[type='submit'] {
   margin: 0 0.2em;
   padding: 0.2em;
 }

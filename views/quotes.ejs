@@ -21,7 +21,7 @@
               </button>
             </h5>
 
-            <span><form method="get" action="/quotes/<%= quote.id%>"><input type="submit" class="btn btn-info btn-sm" value="Edit"></form> <form method="post" action="/quotes/<%= quote.id%>?_method=DELETE"><input type="submit" class="btn btn-info btn-sm" value="Delete"></form></span>
+            <span><form method="get" action="/quotes/<%= quote.id%>"><input type="submit" class="btn btn-secondary btn-sm" value="Edit"></form> <form method="post" action="/quotes/<%= quote.id%>?_method=DELETE"><input type="submit" class="btn btn-secondary btn-sm" value="Delete"></form></span>
 
           </div>
           <div
@@ -36,7 +36,13 @@
               <ul class="list-group">
                 <% for (const comment of quote.comments) { %>
                 <li class="list-group-item">
-                  <%= comment.comment %> <span><a href="/comments/<%= comment.id %>">Edit</a> | <a href="/quotes/<%= quote.id%>">Delete</a></span>
+                  <%= comment.comment %> 
+                  <span>
+                    <form method="get" action="/quotes/<%= quote.id%>"><input type="submit" class="btn btn-secondary btn-sm"
+                      value="Edit"></form>
+                      <form method="post" action="/comments/<%= comment.id%>?_method=DELETE"><input type="submit" class="btn btn-secondary btn-sm"
+                      value="Delete"></form>
+                    </span>
                 </li>
                 <% } %>
               </ul>
