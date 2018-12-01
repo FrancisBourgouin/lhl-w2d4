@@ -143,4 +143,11 @@ app.put('/comments/:id', (req, res) => {
   res.redirect('/quotes');
 });
 
+// Delete a quote
+app.delete('/quotes/:id', (req, res) => {
+  const { id } = req.params;
+  delete movieQuotesDb[id];
+  res.redirect('/quotes');
+});
+
 app.listen(port, () => console.log(`Express server running on port ${port}`));
