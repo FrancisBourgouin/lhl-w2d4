@@ -73,7 +73,7 @@ app.get('/quotes/new', (req, res) => {
 
 // create a new quote
 app.post('/quotes', (req, res) => {
-  const quoteContent = req.body.quote;
+  const { quote: quoteContent } = req.body;
   const id = uuidv4();
 
   const quote = {
@@ -88,14 +88,14 @@ app.post('/quotes', (req, res) => {
 
 // edit a quote
 app.get('/quotes/:id', (req, res) => {
-  const id = req.params.id;
+  const { id } = req.params;
   const quote = movieQuotesDb[id];
   res.render('quote_show', { quote });
 });
 // why not put? we need method override
 app.put('/quotes/:id', (req, res) => {
-  const id = req.params.id;
-  const quote = req.body.quote;
+  const { id } = req.params;
+  const { quote } = req.body;
   movieQuotesDb[id].quote = quote;
   res.redirect('/quotes');
 });
@@ -104,7 +104,7 @@ app.put('/quotes/:id', (req, res) => {
 
 // Display comment form
 app.get('/quotes/:id/comments/new', (req, res) => {
-  const quoteId = req.params.id;
+  const { id: quoteId } = req.params;
   res.render('comment_new', {
     quote: { quoteId, quote: movieQuotesDb[quoteId].quote },
   });
@@ -112,8 +112,8 @@ app.get('/quotes/:id/comments/new', (req, res) => {
 
 // Create comment
 app.post('/quotes/:id/comments', (req, res) => {
-  const quoteId = req.params.id;
-  const comment = req.body.comment;
+  const { id: quoteId } = req.params;
+  const { comment } = req.body;
   const commentId = uuidv4();
   quoteComments[commentId] = {
     id: commentId,
@@ -127,8 +127,7 @@ app.post('/quotes/:id/comments', (req, res) => {
 // Edit comment
 
 app.get('/comments/:commentId', (req, res) => {
-  const quoteId = req.params.quoteId;
-  const commentId = req.params.commentId;
+  const { commentId } = req.params;
 
   res.render('comment_show', {
     content: quoteComments[commentId],
@@ -136,8 +135,8 @@ app.get('/comments/:commentId', (req, res) => {
 });
 
 app.put('/comments/:id', (req, res) => {
-  const commentId = req.params.id;
-  const comment = req.body.comment;
+  const { id: commentId } = req.params;
+  const { comment } = req.body;
 
   quoteComments[commentId].comment = comment;
 
