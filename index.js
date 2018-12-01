@@ -124,15 +124,12 @@ app.post('/quotes/:id/comments', (req, res) => {
 
 // Edit comment
 
-app.get('/quotes/:quoteId/comments/:commentId', (req, res) => {
+app.get('/comments/:commentId', (req, res) => {
   const quoteId = req.params.quoteId;
   const commentId = req.params.commentId;
 
   res.render('comment_show', {
-    quote: {
-      quote: movieQuotesDb[quoteId],
-      comment: quoteComments[commentId],
-    },
+    content: quoteComments[commentId],
   });
 });
 

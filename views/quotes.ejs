@@ -14,7 +14,7 @@
         <li><%= quote.quote %> <a href="/quotes/<%= quote.id %>">Edit</a> <a href='/quotes/<%= quote.id %>/comments/new'>Add Comment</a></li>
           <ul>
           <% for (const comment of quote.comments) { %>
-            <li><%= comment.comment %> <a href="/quotes/<%= quote.id %>/comments/<%= comment.id %>">Edit comment</a>
+            <li><%= comment.comment %> <a href="/comments/<%= comment.id %>">Edit comment</a>
           <% } %>
           </ul>
       <% } %>

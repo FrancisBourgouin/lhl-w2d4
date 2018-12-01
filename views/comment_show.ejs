@@ -9,14 +9,14 @@
   <body>
     <h1>Edit Comment</h1>
 
-    <form method="post" action="/comments/<%= quote.comment.id %>?_method=PUT">
+    <form method="post" action="/comments/<%= content.id %>?_method=PUT">
       <div style="width: 20em;">
         <input
           style="width: 100%"
           type="text"
           name="comment"
           id="comment"
-          value="<%= quote.comment.comment %>"
+          value="<%= content.comment %>"
         />
 
         <input type="submit" value="Update" />
