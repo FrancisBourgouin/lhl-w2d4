@@ -6,6 +6,7 @@ const methodOverride = require('method-override');
 const app = express();
 const port = 8080;
 
+app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
 
@@ -58,6 +59,8 @@ app.get('/', (req, res) => {
   res.redirect('/quotes');
 });
 
+// Display a list of quotes
+
 app.get('/quotes', (req, res) => {
   const quotes = Object.values(quoteList());
   res.render('quotes', { quotes });
@@ -80,7 +83,7 @@ app.post('/quotes', (req, res) => {
 
   movieQuotesDb[id] = quote;
 
-  res.status(301).redirect('/quotes ');
+  res.status(301).redirect('/quotes');
 });
 
 // edit a quote
@@ -102,7 +105,6 @@ app.put('/quotes/:id', (req, res) => {
 // Display comment form
 app.get('/quotes/:id/comments/new', (req, res) => {
   const quoteId = req.params.id;
-
   res.render('comment_new', {
     quote: { quoteId, quote: movieQuotesDb[quoteId].quote },
   });

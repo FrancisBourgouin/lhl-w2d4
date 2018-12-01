@@ -1,27 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Movie Quotes</title>
-  </head>
-  <body>
-    <h1>Movie Quotes</h1>
 
-    <ul>
-      <% for (const quote of quotes) { %>
-        <li><%= quote.quote %> <a href="/quotes/<%= quote.id %>">Edit</a> <a href='/quotes/<%= quote.id %>/comments/new'>Add Comment</a></li>
-          <ul>
-          <% for (const comment of quote.comments) { %>
-            <li><%= comment.comment %> <a href="/comments/<%= comment.id %>">Edit comment</a>
-          <% } %>
-          </ul>
-      <% } %>
-    </ul>
+    <% include ./partials/_head %>
 
-       
-        
+    <div class="container">
+      <h1>Movie Quotes</h1>
 
+      <div class="accordion" id="quote-list">
+        <% for (const quote of quotes) { %>
+        <div class="card">
+          <div class="card-header" id="headingTwo">
+            <h5 class="mb-0">
+              <button
+                class="btn btn-link collapsed"
+                type="button"
+                data-toggle="collapse"
+                data-target="#<%= quote.id %>"
+                aria-expanded="false"
+                aria-controls="collapseTwo"
+              >
+                <%= quote.quote %>
+              </button>
+            </h5>
+
+            <span><a href="/quotes/<%= quote.id %>">Edit</a> | Delete</span>
+
+          </div>
+          <div
+            id="<%= quote.id %>"
+            class="collapse"
+            aria-labelledby="headingTwo"
+            data-parent="#quote-list"
+          >
+            <div class="card-body">
+              <h4>Comments</h4>
+
+              <ul class="list-group">
+                <% for (const comment of quote.comments) { %>
+                <li class="list-group-item">
+                  <%= comment.comment %> <span><a href="/comments/<%= comment.id %>">Edit</a> | Delete</span>
+                </li>
+                <% } %>
+              </ul>
+
+              <a href="/quotes/<%= quote.id %>/comments/new" class="btn btn-info">Add Comment</a>
+            </div>
+          </div>
+        </div>
+        <% } %>
+      </div>
+      <a href="/quotes/new" class="btn btn-primary">Add Quote</a>
+    </div>
   </body>
 </html>
