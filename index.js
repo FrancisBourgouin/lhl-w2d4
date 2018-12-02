@@ -87,7 +87,7 @@ app.post('/quotes', (req, res) => {
 });
 
 // edit a quote
-app.get('/quotes/:id', (req, res) => {
+app.get('/quotes/:id/edit', (req, res) => {
   const { id } = req.params;
   const quote = movieQuotesDb[id];
   res.render('quote_show', { quote });
@@ -126,7 +126,7 @@ app.post('/quotes/:id/comments', (req, res) => {
 
 // Edit comment
 
-app.get('/comments/:commentId', (req, res) => {
+app.get('/comments/:commentId/update', (req, res) => {
   const { commentId } = req.params;
 
   res.render('comment_show', {

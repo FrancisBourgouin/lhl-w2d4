@@ -21,7 +21,7 @@
               </button>
             </h5>
 
-            <span><form method="get" action="/quotes/<%= quote.id%>"><input type="submit" class="btn btn-secondary btn-sm" value="Edit"></form> <form method="post" action="/quotes/<%= quote.id%>?_method=DELETE"><input type="submit" class="btn btn-secondary btn-sm" value="Delete"></form></span>
+            <span><form method="get" action="/quotes/<%= quote.id %>/edit"><input type="submit" class="btn btn-secondary btn-sm" value="Edit"></form> <form method="post" action="/quotes/<%= quote.id%>?_method=DELETE"><input type="submit" class="btn btn-secondary btn-sm" value="Delete"></form></span>
 
           </div>
           <div
@@ -38,7 +38,7 @@
                 <li class="list-group-item">
                   <%= comment.comment %> 
                   <span>
-                    <form method="get" action="/quotes/<%= quote.id%>"><input type="submit" class="btn btn-secondary btn-sm"
+                    <form method="get" action="/quotes/<%= quote.id %>/edit"><input type="submit" class="btn btn-secondary btn-sm"
                       value="Edit"></form>
                       <form method="post" action="/comments/<%= comment.id%>?_method=DELETE"><input type="submit" class="btn btn-secondary btn-sm"
                       value="Delete"></form>
