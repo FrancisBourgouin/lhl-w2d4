@@ -59,102 +59,37 @@ app.get('/', (req, res) => {
   res.redirect('/quotes');
 });
 
-// Display a list of quotes
+// DISPLAY A LIST OF QUOTES
+// const quotes = Object.values(quoteList());
 
-app.get('/quotes', (req, res) => {
-  const quotes = Object.values(quoteList());
-  res.render('quotes', { quotes });
-});
+// DISPLAY THE FORM TO CREATE A NEW QUOTE
+// quote_new
 
-// Display the form to create a new quote
-app.get('/quotes/new', (req, res) => {
-  res.render('quote_new');
-});
+// CREATE QUOTE
 
-// create a new quote
-app.post('/quotes', (req, res) => {
-  const { quote: quoteContent } = req.body;
-  const id = uuidv4();
+// DISPLAY FORM TO EDIT QUOTE
+// const quote = movieQuotesDb[id];
+// quote_show
 
-  const quote = {
-    id,
-    quote: quoteContent,
-  };
+// UPDATE A QUOTE
+// method override
+// id from params, quote from body
 
-  movieQuotesDb[id] = quote;
+// DISPLAY THE FORM TO CREATE A NEW COMMENT
+// nested resources
+// comment_new { quoteId }
 
-  res.status(301).redirect('/quotes');
-});
+// CREATE A COMMENT
+// id from params, comment from body
 
-// edit a quote
-app.get('/quotes/:id', (req, res) => {
-  const { id } = req.params;
-  const quote = movieQuotesDb[id];
-  res.render('quote_show', { quote });
-});
-// why not put? we need method override
-app.put('/quotes/:id', (req, res) => {
-  const { id } = req.params;
-  const { quote } = req.body;
-  movieQuotesDb[id].quote = quote;
-  res.redirect('/quotes');
-});
+// DISPLAY THE FORM TO EDIT COMMENT
+// comment_show {content: ...}
 
-// Add Comment
+// UPDATE THE COMMENT
+// id from params, comment from body
 
-// Display comment form
-app.get('/quotes/:id/comments/new', (req, res) => {
-  const { id: quoteId } = req.params;
-  res.render('comment_new', {
-    quote: { quoteId, quote: movieQuotesDb[quoteId].quote },
-  });
-});
+// DELETE A QUOTE
 
-// Create comment
-app.post('/quotes/:id/comments', (req, res) => {
-  const { id: quoteId } = req.params;
-  const { comment } = req.body;
-  const commentId = uuidv4();
-  quoteComments[commentId] = {
-    id: commentId,
-    comment,
-    quoteId,
-  };
-
-  res.redirect('/quotes');
-});
-
-// Edit comment
-
-app.get('/comments/:commentId', (req, res) => {
-  const { commentId } = req.params;
-
-  res.render('comment_show', {
-    content: quoteComments[commentId],
-  });
-});
-
-app.put('/comments/:id', (req, res) => {
-  const { id: commentId } = req.params;
-  const { comment } = req.body;
-
-  quoteComments[commentId].comment = comment;
-
-  res.redirect('/quotes');
-});
-
-// Delete a quote
-app.delete('/quotes/:id', (req, res) => {
-  const { id } = req.params;
-  delete movieQuotesDb[id];
-  res.redirect('/quotes');
-});
-
-//Delete a comment
-app.delete('/comments/:id', (req, res) => {
-  const { id } = req.params;
-  delete quoteComments[id];
-  res.redirect('/quotes');
-});
+// DELETE A COMMENT
 
 app.listen(port, () => console.log(`Express server running on port ${port}`));
