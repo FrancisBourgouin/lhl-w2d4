@@ -36,7 +36,7 @@ const movieQuotesDb = {
 const quoteComments = {
   '70fcf8bd-6cb0-42f3-9887-77aa9db4f0ac': {
     id: '70fcf8bd-6cb0-42f3-9887-77aa9db4f0ac',
-    comment: 'So awesome comment! I said this.',
+    comment: 'So awesome comment!',
     quoteId: 'd9424e04-9df6-4b76-86cc-9069ca8ee4bb',
   },
 };
