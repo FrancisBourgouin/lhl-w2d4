@@ -59,6 +59,8 @@ app.get('/', (req, res) => {
   res.redirect('/quotes');
 });
 
+// END POINTS
+
 // DISPLAY A LIST OF QUOTES
 // const quotes = Object.values(quoteList());
 
