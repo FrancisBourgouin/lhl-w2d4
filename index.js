@@ -36,7 +36,7 @@ const movieQuotesDb = {
 const quoteComments = {
   '70fcf8bd-6cb0-42f3-9887-77aa9db4f0ac': {
     id: '70fcf8bd-6cb0-42f3-9887-77aa9db4f0ac',
-    comment: 'So awesome comment Bob!',
+    comment: 'So awesome comment!',
     quoteId: 'd9424e04-9df6-4b76-86cc-9069ca8ee4bb',
   },
 };
@@ -59,40 +59,57 @@ app.get('/', (req, res) => {
   res.redirect('/quotes');
 });
 
-// Display a list of quotes
+// END POINTS
+
+// logPayload Middleware
+function logPayload(req, res, next) {
+  console.log(`Method: ${req.method} Url: ${req.url}`);
+  console.log('URL Params: ', req.params);
+  console.log('Query Params: ', req.query);
+  console.log('Body Payload: ', req.body);
+  next();
+}
+
+app.use(logPayload);
+
+// DISPLAY A LIST OF QUOTES
 
 app.get('/quotes', (req, res) => {
   const quotes = Object.values(quoteList());
   res.render('quotes', { quotes });
 });
 
-// Display the form to create a new quote
+app.get('/quotes.json', (req, res) => {
+  const quotes = Object.values(quoteList());
+  res.json(quotes);
+});
+
+// DISPLAY THE FORM TO CREATE A NEW QUOTE
+// quote_new
+
 app.get('/quotes/new', (req, res) => {
   res.render('quote_new');
 });
 
-// create a new quote
+// CREATE QUOTE
 app.post('/quotes', (req, res) => {
-  const { quote: quoteContent } = req.body;
+  const { quote } = req.body;
   const id = uuidv4();
-
-  const quote = {
+  movieQuotesDb[id] = {
     id,
-    quote: quoteContent,
+    quote,
   };
-
-  movieQuotesDb[id] = quote;
-
-  res.status(301).redirect('/quotes');
+  res.redirect('/quotes');
 });
 
-// edit a quote
-app.get('/quotes/:id/edit', (req, res) => {
+// DISPLAY FORM TO EDIT QUOTE
+app.get('/quotes/:id/', (req, res) => {
   const { id } = req.params;
   const quote = movieQuotesDb[id];
   res.render('quote_show', { quote });
 });
-// why not put? we need method override
+
+// UPDATE A QUOTE
 app.put('/quotes/:id', (req, res) => {
   const { id } = req.params;
   const { quote } = req.body;
@@ -100,57 +117,50 @@ app.put('/quotes/:id', (req, res) => {
   res.redirect('/quotes');
 });
 
-// Add Comment
-
-// Display comment form
+// DISPLAY THE FORM TO CREATE A NEW COMMENT
 app.get('/quotes/:id/comments/new', (req, res) => {
   const { id: quoteId } = req.params;
-  res.render('comment_new', {
-    quote: { quoteId, quote: movieQuotesDb[quoteId].quote },
-  });
+
+  res.render('comment_new', { quoteId });
 });
 
-// Create comment
+// CREATE A COMMENT
 app.post('/quotes/:id/comments', (req, res) => {
   const { id: quoteId } = req.params;
   const { comment } = req.body;
-  const commentId = uuidv4();
-  quoteComments[commentId] = {
-    id: commentId,
+  const id = uuidv4();
+  quoteComments[id] = {
+    id,
     comment,
     quoteId,
   };
-
   res.redirect('/quotes');
 });
 
-// Edit comment
-
-app.get('/comments/:commentId/update', (req, res) => {
-  const { commentId } = req.params;
-
-  res.render('comment_show', {
-    content: quoteComments[commentId],
-  });
+// DISPLAY THE FORM TO EDIT COMMENT
+app.get('/comments/:id/update', (req, res) => {
+  const { id } = req.params;
+  res.render('comment_show', { content: quoteComments[id] });
 });
 
+// UPDATE THE COMMENT
 app.put('/comments/:id', (req, res) => {
-  const { id: commentId } = req.params;
+  const { id } = req.params;
   const { comment } = req.body;
 
-  quoteComments[commentId].comment = comment;
+  quoteComments[id].comment = comment;
 
   res.redirect('/quotes');
 });
 
-// Delete a quote
+// DELETE A QUOTE
 app.delete('/quotes/:id', (req, res) => {
   const { id } = req.params;
   delete movieQuotesDb[id];
   res.redirect('/quotes');
 });
 
-//Delete a comment
+// DELETE A COMMENT
 app.delete('/comments/:id', (req, res) => {
   const { id } = req.params;
   delete quoteComments[id];
