@@ -28,3 +28,15 @@
     <title>Movie Quotes</title>
   </head>
   <body>
+
+  <header class='header'>
+    <h2>MovieQUOTZ</h2>
+
+    <div>
+      <% if (user) { %>
+        <p>Welcome <%= user.name %></p>
+      <% } else { %>
+        <a href=''>Login</a> | <a href=''>Register</a>
+      <% } %>    
+    </div>
+  </header>

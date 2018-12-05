@@ -10,6 +10,19 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
 
+const users = {
+  'eb849b1f-4642-4c16-a77b-71ac2f90996f': {
+    id: 'eb849b1f-4642-4c16-a77b-71ac2f90996f',
+    name: 'Kent Cook',
+    email: 'really.kent.cook@kitchen.com',
+  },
+  '1dc937ec-7d71-4f37-9560-eef9d998a9b7': {
+    id: '1dc937ec-7d71-4f37-9560-eef9d998a9b7',
+    name: 'Phil A. Mignon',
+    email: 'good.philamignon@steak.com',
+  },
+};
+
 const movieQuotesDb = {
   'd9424e04-9df6-4b76-86cc-9069ca8ee4bb': {
     id: 'd9424e04-9df6-4b76-86cc-9069ca8ee4bb',
@@ -76,7 +89,7 @@ app.use(logPayload);
 
 app.get('/quotes', (req, res) => {
   const quotes = Object.values(quoteList());
-  res.render('quotes', { quotes });
+  res.render('quotes', { quotes, user: null });
 });
 
 app.get('/quotes.json', (req, res) => {
