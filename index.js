@@ -61,11 +61,26 @@ app.get('/', (req, res) => {
 
 // END POINTS
 
+function logPayload(req, res, next) {
+  console.log(`Method: ${req.method} Url: ${req.url}`);
+  console.log('URL Params: ', req.params);
+  console.log('Query Params: ', req.query);
+  console.log('Body Payload: ', req.body);
+  next();
+}
+
+app.use(logPayload);
+
 // DISPLAY A LIST OF QUOTES
 
 app.get('/quotes', (req, res) => {
   const quotes = Object.values(quoteList());
   res.render('quotes', { quotes });
+});
+
+app.get('/quotes.json', (req, res) => {
+  const quotes = Object.values(quoteList());
+  res.json(quotes);
 });
 
 // DISPLAY THE FORM TO CREATE A NEW QUOTE
