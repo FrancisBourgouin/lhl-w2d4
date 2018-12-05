@@ -62,36 +62,107 @@ app.get('/', (req, res) => {
 // END POINTS
 
 // DISPLAY A LIST OF QUOTES
-// const quotes = Object.values(quoteList());
+
+app.get('/quotes', (req, res) => {
+  const quotes = Object.values(quoteList());
+  res.render('quotes', { quotes });
+});
 
 // DISPLAY THE FORM TO CREATE A NEW QUOTE
 // quote_new
 
+app.get('/quotes/new', (req, res) => {
+  res.render('quote_new');
+});
+
 // CREATE QUOTE
+app.post('/quotes', (req, res) => {
+  const { quote } = req.body;
+  const id = uuidv4();
+  movieQuotesDb[id] = {
+    id,
+    quote,
+  };
+  res.redirect('/quotes');
+});
 
 // DISPLAY FORM TO EDIT QUOTE
 // const quote = movieQuotesDb[id];
 // quote_show
+app.get('/quotes/:id/', (req, res) => {
+  const { id } = req.params;
+  const quote = movieQuotesDb[id];
+  res.render('quote_show', { quote });
+});
 
 // UPDATE A QUOTE
 // method override
 // id from params, quote from body
+app.put('/quotes/:id', (req, res) => {
+  const { id } = req.params;
+  const { quote } = req.body;
+  movieQuotesDb[id].quote = quote;
+  res.redirect('/quotes');
+});
 
 // DISPLAY THE FORM TO CREATE A NEW COMMENT
 // nested resources
 // comment_new { quoteId }
 
+app.get('/quotes/:id/comments/new', (req, res) => {
+  const { id: quoteId } = req.params;
+
+  res.render('comment_new', { quoteId });
+});
+
 // CREATE A COMMENT
 // id from params, comment from body
+app.post('/quotes/:id/comments', (req, res) => {
+  const { id: quoteId } = req.params;
+  const { comment } = req.body;
+  const id = uuidv4();
+  quoteComments[id] = {
+    id,
+    comment,
+    quoteId,
+  };
+  res.redirect('/quotes');
+});
 
 // DISPLAY THE FORM TO EDIT COMMENT
 // comment_show {content: ...}
 
+app.get('/comments/:id/update', (req, res) => {
+  const { id } = req.params;
+  res.render('comment_show', { content: quoteComments[id] });
+});
+
 // UPDATE THE COMMENT
 // id from params, comment from body
 
+app.put('/comments/:id', (req, res) => {
+  const { id } = req.params;
+  const { comment } = req.body;
+
+  quoteComments[id].comment = comment;
+
+  res.redirect('/quotes');
+});
+
 // DELETE A QUOTE
 
+app.delete('/quotes/:id', (req, res) => {
+  const { id } = req.params;
+  delete movieQuotesDb[id];
+  res.redirect('/quotes');
+});
+
 // DELETE A COMMENT
+
+app.delete('/comments/:id', (req, res) => {
+  const { id } = req.params;
+  delete quoteComments[id];
+  res.redirect('/quotes');
+});
 
 app.listen(port, () => console.log(`Express server running on port ${port}`));
