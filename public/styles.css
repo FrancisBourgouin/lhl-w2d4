@@ -75,3 +75,15 @@ div.form-group {
   display: flex;
   align-items: center;
 }
+
+.welcome-msg {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.welcome-msg input[type='submit'] {
+  border: 1px solid steelblue;
+  background-color: cornflowerblue;
+  border-radius: 5px;
+}

@@ -83,7 +83,7 @@ function logPayload(req, res, next) {
   next();
 }
 
-app.use(logPayload);
+// app.use(logPayload);
 
 // DISPLAY A LIST OF QUOTES
 
