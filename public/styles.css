@@ -76,14 +76,25 @@ div.form-group {
   align-items: center;
 }
 
-.welcome-msg {
+div.form-group label {
+  width: 10em;
+}
+
+div.welcome-msg {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.welcome-msg input[type='submit'] {
-  border: 1px solid steelblue;
+div.welcome-msg input[type='submit'] {
   background-color: cornflowerblue;
+  border: 1px solid lightblue;
+  padding: 0.2em;
   border-radius: 5px;
+  margin: 0 1em;
+}
+
+div.welcome-msg input[type='submit']:hover {
+  background-color: lightblue;
+  border: 1px solid cornflowerblue;
 }
