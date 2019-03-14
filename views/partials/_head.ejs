@@ -33,12 +33,15 @@
     <h2>MovieQUOTZ</h2>
 
     <div>
+      <% if (username) { %> 
       <div class="welcome-msg">
-        <p></p>
+        <p>Welcome, <%= username %> </p>
         <form>
           <input type='submit' value='logout'>
         </form>
       </div>
+      <% } else { %> 
         <a href='/login'>Login</a> | <a href='/register'>Register</a>
+      <% } %> 
     </div>
   </header>

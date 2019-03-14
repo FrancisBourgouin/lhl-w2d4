@@ -2,6 +2,8 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const uuidv4 = require('uuid/v4');
 const methodOverride = require('method-override');
+const cookieParser = require('cookie-parser');
+const cookieSession = require('cookie-session');
 
 const app = express();
 const port = process.env.port || 8080;
@@ -9,9 +11,17 @@ const port = process.env.port || 8080;
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
+app.set('view engine', 'ejs');
+app.use(cookieParser());
+app.use(
+  cookieSession({
+    name: 'session',
+    keys: ['ab222be5-0215-45a0-8c01-41d141d1185b'],
+  })
+);
 
 // users database
-const users = {
+const usersDb = {
   '1': {
     id: '1',
     name: 'Kent Cook',
@@ -104,7 +114,35 @@ const addComment = (quoteId, comment) => {
   quoteComments[id] = newComment;
 };
 
-app.set('view engine', 'ejs');
+// create a new user and adds it to usersDb
+// return the user id so we can set it in the cookies
+
+const createUser = (name, email, password) => {
+  // generate a user id
+  const userId = Object.keys(usersDb).length + 1;
+
+  // '1': {
+  //   id: '1',
+  //     name: 'Kent Cook',
+  //       email: 'really.kent.cook@kitchen.com',
+  //         password: 'test',
+  // },
+
+  // create a new user object
+  const newUser = {
+    id: userId,
+    name: name,
+    email: email,
+    password: password,
+  };
+  // add the user object to usersDb
+
+  usersDb[userId] = newUser;
+
+  // return user id
+
+  return userId;
+};
 
 app.get('/', (req, res) => {
   res.redirect('/quotes');
@@ -116,7 +154,23 @@ app.get('/', (req, res) => {
 
 app.get('/quotes', (req, res) => {
   const quotes = quoteList();
-  const tempateVars = { quotes };
+
+  // getting the user id from the cookies (cookie parser)
+  // can be a user id or undefined
+  // const userId = req.cookies['user_id'];
+
+  // getting the user id from the cookies (cookie session)
+  const userId = req.session.user_id;
+
+  // this gets the user object from usersDb
+  // can also be undefined
+
+  const currentUser = usersDb[userId];
+
+  const tempateVars = {
+    quotes,
+    username: currentUser ? currentUser.name : null,
+  };
   res.render('quotes', tempateVars);
 });
 
@@ -140,7 +194,6 @@ app.get('/quotes/:id/', (req, res) => {
   const quote = movieQuotesDb[id];
   res.render('quote_show', { quote });
 });
-
 // UPDATE A QUOTE
 app.put('/quotes/:id', (req, res) => {
   const { id } = req.params;
@@ -194,6 +247,52 @@ app.delete('/comments/:id', (req, res) => {
   const { id } = req.params;
   delete quoteComments[id];
   res.redirect('/quotes');
+});
+
+// Display the register form
+app.get('/register', (req, res) => {
+  res.render('register', { username: null });
+});
+
+// This will create a new user in the usersDb and set the cookie
+app.post('/register', (req, res) => {
+  //extract information from the form req.body
+
+  const name = req.body.name;
+  const email = req.body.email;
+  const password = req.body.password;
+
+  // es6 version
+  // const { name, email, password } = req.body;
+
+  // create a new user
+
+  const userId = createUser(name, email, password);
+
+  // set the cookie with the user_id (cookie parser)
+  // res.cookie('user_id', userId);
+
+  // set the cookie with the user_id (cookie session)
+  req.session.user_id = userId;
+
+  // res.redirect
+
+  res.redirect('/quotes');
+});
+
+// Display the login form
+app.get('/login', (req, res) => {
+  var templateVars = { username: null };
+  res.render('login', templateVars);
+});
+
+app.post('/login', (req, res) => {
+  // Extract the login info from the form
+  // Authenticate the user
+  // create a function authenticate that will return false or the user id
+  // checks if a user with that email and password exists in usersDb
+  // if userId is truthy, set the cookie and redirect
+  // if userId is falsy, send error message
 });
 
 app.listen(port, () => console.log(`Express server running on port ${port}`));
