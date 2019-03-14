@@ -4,25 +4,29 @@ const uuidv4 = require('uuid/v4');
 const methodOverride = require('method-override');
 
 const app = express();
-const port = 8080;
+const port = process.env.port || 8080;
 
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(methodOverride('_method'));
 
+// users database
 const users = {
-  'eb849b1f-4642-4c16-a77b-71ac2f90996f': {
-    id: 'eb849b1f-4642-4c16-a77b-71ac2f90996f',
+  '1': {
+    id: '1',
     name: 'Kent Cook',
     email: 'really.kent.cook@kitchen.com',
+    password: 'test',
   },
-  '1dc937ec-7d71-4f37-9560-eef9d998a9b7': {
-    id: '1dc937ec-7d71-4f37-9560-eef9d998a9b7',
+  '2': {
+    id: '2',
     name: 'Phil A. Mignon',
     email: 'good.philamignon@steak.com',
+    password: 'test',
   },
 };
 
+// Movie Quotes Database
 const movieQuotesDb = {
   'd9424e04-9df6-4b76-86cc-9069ca8ee4bb': {
     id: 'd9424e04-9df6-4b76-86cc-9069ca8ee4bb',
@@ -46,6 +50,7 @@ const movieQuotesDb = {
   },
 };
 
+// Comments Database
 const quoteComments = {
   '70fcf8bd-6cb0-42f3-9887-77aa9db4f0ac': {
     id: '70fcf8bd-6cb0-42f3-9887-77aa9db4f0ac',
@@ -54,16 +59,49 @@ const quoteComments = {
   },
 };
 
-const quoteList = () => {
-  const quotes = {};
+// Return an array of comments for a specifiq quote
+const commentsByQuoteId = (quoteId, commentsArr) =>
+  commentsArr.filter(commentObj => commentObj.quoteId === quoteId);
 
-  for (const quoteId in movieQuotesDb) {
-    quotes[quoteId] = movieQuotesDb[quoteId];
-    quotes[quoteId].comments = Object.keys(quoteComments)
-      .filter(commentId => quoteComments[commentId].quoteId === quoteId)
-      .map(commentId => quoteComments[commentId]);
-  }
-  return quotes;
+const quoteList = () => {
+  // creating an array of movie quote objects
+  const quotesArr = Object.values(movieQuotesDb);
+
+  // creating an array of comment objects
+  const commentsArr = Object.values(quoteComments);
+
+  // Add a comments property to each quoteObj in the array
+  // comments property is an array of comment objects obtained
+  // by commentsByQuoteId
+
+  const movieQuotesComments = quotesArr.map(quoteObj => {
+    quoteObj.comments = commentsByQuoteId(quoteObj.id, commentsArr);
+    return quoteObj;
+  });
+
+  return movieQuotesComments;
+};
+
+// Add a new quote to the movieQuoteDb
+const addQuote = quote => {
+  const id = uuidv4();
+  const newQuote = {
+    id: id,
+    quote: quote,
+  };
+
+  movieQuotesDb[id] = newQuote;
+};
+
+// Add a new comment in the comments database
+const addComment = (quoteId, comment) => {
+  const id = uuidv4();
+  const newComment = {
+    id,
+    comment,
+    quoteId,
+  };
+  quoteComments[id] = newComment;
 };
 
 app.set('view engine', 'ejs');
@@ -74,27 +112,12 @@ app.get('/', (req, res) => {
 
 // END POINTS
 
-// logPayload Middleware
-function logPayload(req, res, next) {
-  console.log(`Method: ${req.method} Url: ${req.url}`);
-  console.log('URL Params: ', req.params);
-  console.log('Query Params: ', req.query);
-  console.log('Body Payload: ', req.body);
-  next();
-}
-
-// app.use(logPayload);
-
 // DISPLAY A LIST OF QUOTES
 
 app.get('/quotes', (req, res) => {
-  const quotes = Object.values(quoteList());
-  res.render('quotes', { quotes, user: null });
-});
-
-app.get('/quotes.json', (req, res) => {
-  const quotes = Object.values(quoteList());
-  res.json(quotes);
+  const quotes = quoteList();
+  const tempateVars = { quotes };
+  res.render('quotes', tempateVars);
 });
 
 // DISPLAY THE FORM TO CREATE A NEW QUOTE
@@ -107,11 +130,7 @@ app.get('/quotes/new', (req, res) => {
 // CREATE QUOTE
 app.post('/quotes', (req, res) => {
   const { quote } = req.body;
-  const id = uuidv4();
-  movieQuotesDb[id] = {
-    id,
-    quote,
-  };
+  addQuote(quote);
   res.redirect('/quotes');
 });
 
@@ -141,12 +160,9 @@ app.get('/quotes/:id/comments/new', (req, res) => {
 app.post('/quotes/:id/comments', (req, res) => {
   const { id: quoteId } = req.params;
   const { comment } = req.body;
-  const id = uuidv4();
-  quoteComments[id] = {
-    id,
-    comment,
-    quoteId,
-  };
+
+  addComment(quoteId, comment);
+
   res.redirect('/quotes');
 });
 
